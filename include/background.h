@@ -203,6 +203,7 @@ struct background
   int index_bg_conf_distance; /**< conformal distance (from us) in Mpc */
   int index_bg_ang_distance;  /**< angular diameter distance in Mpc */
   int index_bg_lum_distance;  /**< luminosity distance in Mpc */
+  int index_bg_zdrift;        /**< redshift drift (\f$ \Delta z / \Delta t \f$) in 1/Mpc */ 
   int index_bg_time;          /**< proper (cosmological) time in Mpc */
   int index_bg_rs;            /**< comoving sound horizon in Mpc */
 

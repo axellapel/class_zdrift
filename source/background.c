@@ -581,6 +581,9 @@ int background_functions(
   /** - compute derivative of H with respect to conformal time */
   pvecback[pba->index_bg_H_prime] = - (3./2.) * (rho_tot + p_tot) * a + pba->K/a;
 
+  /** - compute redshift drift */
+  pvecback[pba->index_bg_zdrift] = (pba->H0 / a) - sqrt(rho_tot - pba->K / a / a);
+
   /* Total energy density*/
   pvecback[pba->index_bg_rho_tot] = rho_tot;
 
@@ -1118,6 +1121,9 @@ int background_indices(
 
   /* -> luminosity distance */
   class_define_index(pba->index_bg_lum_distance,_TRUE_,index_bg,1);
+
+  /* -> redshift drift */
+  class_define_index(pba->index_bg_zdrift, _TRUE_, index_bg, 1);
 
   /* -> proper time (for age of the Universe) */
   class_define_index(pba->index_bg_time,_TRUE_,index_bg,1);
@@ -2434,6 +2440,7 @@ int background_output_titles(
   class_store_columntitle(titles,"ang.diam.dist.",_TRUE_);
   class_store_columntitle(titles,"lum. dist.",_TRUE_);
   class_store_columntitle(titles,"comov.snd.hrz.",_TRUE_);
+  class_store_columntitle(titles,"redshift drift [1/Mpc]",_TRUE_);
   class_store_columntitle(titles,"(.)rho_g",_TRUE_);
   class_store_columntitle(titles,"(.)rho_b",_TRUE_);
   class_store_columntitle(titles,"(.)rho_cdm",pba->has_cdm);
@@ -2508,6 +2515,7 @@ int background_output_data(
     class_store_double(dataptr,pvecback[pba->index_bg_conf_distance],_TRUE_,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_ang_distance],_TRUE_,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_lum_distance],_TRUE_,storeidx);
+    class_store_double(dataptr, pvecback[pba->index_bg_zdrift], _TRUE_, storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_rs],_TRUE_,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_rho_g],_TRUE_,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_rho_b],_TRUE_,storeidx);
