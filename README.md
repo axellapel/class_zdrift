@@ -1,3 +1,25 @@
+CLASS_zdrift
+============
+
+`CLASS_zdrift` is an adapted version of `CLASS`, fine-tuned for redshift drift cosmology applications. **/!\ Please make sure to switch on the `zdrift` branch to use it**
+
+---
+
+Key features include:
+- Computation of **theoretical redshift drift signal** and associated **spectroscopic velocity shift** for a given observation time interval.
+- Compatibility with standard **MCMC samplers** like MontePython, Cobaya, COSMOSIS, etc., facilitating redshift drift forecasting.
+
+---
+
+Some notes on its utilization:
+- It makes use of **standard CLASS parameters**, enabling computation of background observables for a wide range of built-in cosmologies (i.e. LCDM, wCDM, w0waCDM, curved-LCDM, specific scalar fields or any model affecting the density budget in Friedmann's equation).
+- It requires a CLASS wrapper instance initialized to a specific cosmology. *In the absence of specified outputs like perturbation spectra, it focuses on computing background quantities within interpolation tables, notably redshift drift.*
+- The main methods are `redshift_drift(z)` and `spectro_velocity_shift(z, delta_t)`.
+
+---
+
+You can find a minimal usage example of `CLASS_zdrift` for redshift drift observables computation in a Flat-LCDM cosmology scenario in `notebooks/tuto_CLASS_zdrift.ipynb`.
+
 CLASS: Cosmic Linear Anisotropy Solving System  {#mainpage}
 ==============================================
 
