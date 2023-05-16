@@ -1535,6 +1535,90 @@ cdef class Class:
 
         return r
 
+    def redshift_drift(self, z):
+        """
+        redshift_drift(z)
+
+        Return the redshift drift (defined by Class as index_bg_zdrift in the background module) at a given redshift.
+        --> zdrift = Delta z / Delta t = H0(1+z) - H(z)
+
+        Parameters
+        ----------
+        z : float
+                Desired redshift
+
+        Returns
+        -------
+        zdrift : float
+                Redshift drift [1/yr]
+        """
+        cdef int last_index
+        cdef double * pvecback
+
+        pvecback = <double*> calloc(self.ba.bg_size,sizeof(double))
+
+        if background_at_z(&self.ba,z,long_info,inter_normal,&last_index,pvecback)==_FAILURE_:
+            raise CosmoSevereError(self.ba.error_message)
+
+        # Redshift drift (CLASS units: [1/Mpc])
+        zdrift_class = pvecback[self.ba.index_bg_zdrift]
+        free(pvecback)
+
+        # Speed of light [km/s]
+        c = 299792.458
+
+        # Conversion factors
+        km2Mpc = 3.2407792896664e-20
+        year2sec = 364.25 * 24.0 * 3600.0
+
+        # Redshift drift [1/yr]
+        zdrift = zdrift_class * c * km2Mpc * year2sec
+
+        return zdrift
+
+
+    def spectro_velocity_shift(self, z, delta_t):
+        """
+        spectro_velocity_shift(z)
+
+        Return the spectroscopic velocity shift of a distant source associated to the
+        redshift drift, observed between a given time interval delta_t.
+        --> vshift = Delta v = c * Delta z / (1+z) = c * Delta t * [H0(1+z) - H(z)] / (1+z)
+
+        Parameters
+        ----------
+        z : float
+                Desired redshift
+        delta_t : float
+                Time interval in years
+        """
+        cdef int last_index
+        cdef double * pvecback
+
+        pvecback = <double*> calloc(self.ba.bg_size,sizeof(double))
+
+        if background_at_z(&self.ba,z,long_info,inter_normal,&last_index,pvecback)==_FAILURE_:
+            raise CosmoSevereError(self.ba.error_message)
+
+        # Redshift drift (CLASS units: [1/Mpc])
+        zdrift_class = pvecback[self.ba.index_bg_zdrift]
+        free(pvecback)
+
+        # Speed of light [km/s]
+        c = 299792.458
+
+        # Conversion factors
+        km2Mpc = 3.2407792896664e-20
+        year2sec = 364.25 * 24.0 * 3600.0
+
+        # Redshift drift [1/yr]
+        zdrift = zdrift_class * c * km2Mpc * year2sec
+
+        # Spectroscopic velocity shift (Delta_v) [cm/s]
+        vshift = (c * 1e5) * zdrift * delta_t / (1.0 + z)
+
+        return vshift
+
     def scale_independent_growth_factor(self, z):
         """
         scale_independent_growth_factor(z)
